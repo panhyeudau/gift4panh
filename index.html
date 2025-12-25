@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Noel yêu xa</title>
+  <style>
+    :root{
+      --bg1:#070a12; --bg2:#180a18;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --accent:#ff4d7d;
+      --shadow: 0 22px 70px rgba(0,0,0,.45);
+      --r: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1000px 700px at 15% 10%, rgba(255,77,125,.20), transparent 55%),
+        radial-gradient(900px 700px at 85% 25%, rgba(255,209,102,.14), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+    .stars{
+      position:fixed; inset:0; pointer-events:none; opacity:.55; z-index:0;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.55), transparent 60%),
+        radial-gradient(1px 1px at 160px 90px, rgba(255,255,255,.35), transparent 60%),
+        radial-gradient(2px 2px at 260px 220px, rgba(255,255,255,.45), transparent 60%),
+        radial-gradient(1px 1px at 420px 160px, rgba(255,255,255,.35), transparent 60%),
+        radial-gradient(2px 2px at 620px 320px, rgba(255,255,255,.45), transparent 60%);
+      background-size: 700px 420px;
+      animation: drift 18s linear infinite;
+    }
+    @keyframes drift{ from{transform:translateY(0)} to{transform:translateY(-60px)} }
+
+    .wrap{ position:relative; z-index:1; padding:18px 14px 48px; }
+    .top{
+      max-width:980px; margin: 0 auto 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      padding: 14px 14px;
+    }
+    .brand{display:flex; gap:10px; align-items:center}
+    .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
+      box-shadow: 0 0 18px rgba(255,77,125,.55);
+    }
+    .title{font-weight:800; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size:13px; margin-top:2px}
+
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn:hover{background:rgba(255,255,255,.10)}
+    .btn.primary{border-color: rgba(255,77,125,.45); background: rgba(255,77,125,.18);}
+
+    .hero{
+      max-width:980px; margin:0 auto;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--r);
+      padding: 18px 18px;
+    }
+    .hero h1{margin:0 0 6px; font-size:22px}
+    .hero p{margin:0; color:var(--muted); line-height:1.6}
+
+    .timeline{
+      max-width:980px; margin: 14px auto 0;
+      display:grid; gap:12px;
+    }
+    .item{
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border-radius: var(--r);
+      box-shadow: 0 14px 50px rgba(0,0,0,.25);
+      padding: 16px 16px;
+      overflow:hidden;
+      transform: translateY(14px);
+      opacity: 0;
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .item.show{ opacity:1; transform: translateY(0); }
+    .kicker{color:rgba(255,255,255,.78); font-weight:800; font-size:13px; letter-spacing:.5px}
+    .h{margin:6px 0 8px; font-size:18px; font-weight:800}
+    .txt{color:rgba(255,255,255,.80); line-height:1.75}
+    .tag{
+      display:inline-flex; gap:8px; align-items:center;
+      margin-top:10px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.14);
+      color:rgba(255,255,255,.78);
+      font-size:13px;
+    }
+
+    .footer{
+      max-width:980px; margin: 14px auto 0;
+      text-align:center; color:rgba(255,255,255,.65); font-size:13px;
+    }
+
+    /* Modal letter */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      padding: 16px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+      align-items:flex-start;
+    }
+    .modal.show{ display:grid; }
+    .sheet{
+      width:min(760px, 94vw);
+      margin: 18px auto;
+      background: rgba(255,255,255,.95);
+      color:#111;
+      border-radius: 22px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.55);
+      padding: 20px 18px;
+      position:relative;
+      max-height: calc(100vh - 36px);
+      overflow:auto;
+    }
+    .x{
+      position:absolute; right:12px; top:12px;
+      border:0; cursor:pointer;
+      width:40px; height:40px; border-radius:14px;
+      background: rgba(0,0,0,.06);
+      font-weight:900;
+    }
+    .x:hover{ background: rgba(0,0,0,.10); }
+    .sheet h2{ margin:0 0 10px; font-size:20px; }
+    .sheet .text{ white-space: normal; line-height:1.75; font-size:16px; }
+    .sheet .sig{ margin-top:14px; opacity:.9; }
+
+    .toast{
+      position:fixed; left:50%; bottom:14px; transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.9);
+      padding:10px 12px;
+      border-radius: 14px;
+      display:none;
+      z-index:60;
+      font-size:13px;
+    }
+    .toast.show{ display:block; }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div class="title">Noel yêu xa</div>
+          <div class="sub">Cuộn xuống để đọc từng mốc. Nhạc chỉ phát khi bấm.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn" id="musicBtn">♫ Bật nhạc</button>
+        <button class="btn primary" id="openLetter">💌 Mở thư</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <h1>Dù ở xa, đêm Noel này anh vẫn ở đây cùng em.</h1>
+      <p>Trang này là một “lá thư theo dòng thời gian” — từng đoạn sẽ hiện khi em cuộn xuống.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="item">
+        <div class="kicker">MỐC 01</div>
+        <div class="h">Một điều anh muốn nói ngay</div>
+        <div class="txt">Anh nhớ em. Và anh thương em — không vì Noel, mà vì em là em.</div>
+        <div class="tag">🤍 Yêu xa</div>
+      </div>
+
+      <div class="item">
+        <div class="kicker">MỐC 02</div>
+        <div class="h">Noel năm nay</div>
+        <div class="txt">Mình không ở cạnh nhau, nhưng anh vẫn muốn em có cảm giác: “Anh đang ở đây.”</div>
+        <div class="tag">🎄 24/12</div>
+      </div>
+
+      <div class="item">
+        <div class="kicker">MỐC 03</div>
+        <div class="h">Điều anh trân trọng nhất</div>
+        <div class="txt">Là em vẫn ở lại, vẫn lắng nghe, vẫn tin anh có thể tốt hơn mỗi ngày.</div>
+        <div class="tag">✨ Biết ơn</div>
+      </div>
+
+      <div class="item">
+        <div class="kicker">MỐC 04</div>
+        <div class="h">Một lời hứa nhỏ (nhưng thật)</div>
+        <div class="txt">Anh sẽ chủ động hơn, tinh tế hơn, và yêu em bằng hành động rõ ràng hơn.</div>
+        <div class="tag">🧭 Tương lai</div>
+      </div>
+
+      <div class="item">
+        <div class="kicker">MỐC 05</div>
+        <div class="h">Đến khi mình gặp nhau</div>
+        <div class="txt">Anh muốn được ôm em thật lâu, và nói: “Noel năm sau mình sẽ không xa nhau nữa.”</div>
+        <div class="tag">🫶 Hẹn gặp</div>
+      </div>
+    </div>
+
+    <div class="footer">Gợi ý: bấm “Mở thư” để xem bức thư đầy đủ.</div>
+  </div>
+
+  <!-- Modal letter -->
+  <div class="modal" id="modal">
+    <div class="sheet" role="dialog" aria-modal="true">
+      <button class="x" id="closeModal" aria-label="Đóng">✕</button>
+      <h2>Gửi em,</h2>
+
+      <div class="text" id="letterText">
+Anh biết Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn anh nói ra.
+Nhưng anh vẫn muốn em cảm thấy được yêu, được trân trọng, và được “ở cùng anh” theo cách riêng.
+
+Nếu hôm nay em mệt, em chỉ cần đọc đến đây thôi cũng được.
+Còn nếu em muốn, anh sẽ kể tiếp bằng hành động — mỗi ngày một chút, để mình gần nhau hơn.
+
+Thương em 🤍
+      </div>
+
+      <div class="sig">— <b>[Tên của bạn]</b></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <audio id="bgm" preload="auto" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const modal = document.getElementById('modal');
+    const openLetter = document.getElementById('openLetter');
+    const closeModal = document.getElementById('closeModal');
+    const toast = document.getElementById('toast');
+
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    let musicOn = false;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'), 2200);
+    }
+
+    // Scroll reveal
+    const io = new IntersectionObserver((entries)=>{
+      for(const e of entries){
+        if(e.isIntersecting) e.target.classList.add('show');
+      }
+    }, { threshold: 0.18 });
+
+    items.forEach(el=>io.observe(el));
+
+    // Modal
+    openLetter.addEventListener('click', (e)=>{
+      e.preventDefault();
+      modal.classList.add('show');
+    });
+    function closeLetter(){
+      modal.classList.remove('show');
+    }
+    closeModal.addEventListener('click', closeLetter);
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeLetter(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLetter(); });
+
+    // Music
+    async function toggleMusic(){
+      try{
+        if(!musicOn){
+          await bgm.play();
+          musicOn = true;
+          musicBtn.textContent = "❚❚ Tắt nhạc";
+          showToast("Nhạc đã bật ♫");
+        }else{
+          bgm.pause();
+          musicOn = false;
+          musicBtn.textContent = "♫ Bật nhạc";
+          showToast("Đã tắt nhạc");
+        }
+      }catch(err){
+        showToast("Không phát được nhạc: hãy thêm file music.mp3");
+      }
+    }
+    musicBtn.addEventListener('click', (e)=>{ e.preventDefault(); toggleMusic(); });
+  </script>
+</body>
+</html>
