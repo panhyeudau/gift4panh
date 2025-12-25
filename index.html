@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Noel yêu xa</title>
+  <title>Thư tay theo dòng thời gian</title>
   <style>
     :root{
       --bg1:#070a12; --bg2:#180a18;
@@ -12,6 +12,7 @@
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --accent:#ff4d7d;
+      --accent2:#ffd166;
       --shadow: 0 22px 70px rgba(0,0,0,.45);
       --r: 22px;
     }
@@ -23,6 +24,7 @@
         radial-gradient(1000px 700px at 15% 10%, rgba(255,77,125,.20), transparent 55%),
         radial-gradient(900px 700px at 85% 25%, rgba(255,209,102,.14), transparent 55%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
     }
     .stars{
       position:fixed; inset:0; pointer-events:none; opacity:.55; z-index:0;
@@ -37,7 +39,7 @@
     }
     @keyframes drift{ from{transform:translateY(0)} to{transform:translateY(-60px)} }
 
-    .wrap{ position:relative; z-index:1; padding:18px 14px 48px; }
+    .wrap{ position:relative; z-index:1; padding:18px 14px 52px; }
     .top{
       max-width:980px; margin: 0 auto 16px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -54,7 +56,7 @@
       background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
       box-shadow: 0 0 18px rgba(255,77,125,.55);
     }
-    .title{font-weight:800; letter-spacing:.2px}
+    .title{font-weight:900; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:13px; margin-top:2px}
 
     .btn{
@@ -64,9 +66,12 @@
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
+      user-select:none;
+      transition: transform .08s ease, background .2s ease;
     }
     .btn:hover{background:rgba(255,255,255,.10)}
+    .btn:active{transform: translateY(1px)}
     .btn.primary{border-color: rgba(255,77,125,.45); background: rgba(255,77,125,.18);}
 
     .hero{
@@ -95,9 +100,9 @@
       transition: opacity .7s ease, transform .7s ease;
     }
     .item.show{ opacity:1; transform: translateY(0); }
-    .kicker{color:rgba(255,255,255,.78); font-weight:800; font-size:13px; letter-spacing:.5px}
-    .h{margin:6px 0 8px; font-size:18px; font-weight:800}
-    .txt{color:rgba(255,255,255,.80); line-height:1.75}
+    .kicker{color:rgba(255,255,255,.78); font-weight:900; font-size:13px; letter-spacing:.5px}
+    .h{margin:6px 0 8px; font-size:18px; font-weight:900}
+    .txt{color:rgba(255,255,255,.82); line-height:1.75}
     .tag{
       display:inline-flex; gap:8px; align-items:center;
       margin-top:10px;
@@ -109,12 +114,25 @@
       font-size:13px;
     }
 
-    .footer{
+    .end{
       max-width:980px; margin: 14px auto 0;
-      text-align:center; color:rgba(255,255,255,.65); font-size:13px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border-radius: var(--r);
+      box-shadow: 0 14px 50px rgba(0,0,0,.25);
+      padding: 18px 18px;
+      text-align:center;
     }
+    .quote{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.2px;
+      line-height:1.6;
+    }
+    .sig{margin-top:10px; color:rgba(255,255,255,.78); font-weight:800}
+    .small{margin-top:6px; color:rgba(255,255,255,.62); font-size:13px}
 
-    /* Modal letter */
+    /* Modal letter (full letter) */
     .modal{
       position:fixed; inset:0;
       display:none;
@@ -150,7 +168,7 @@
     .x:hover{ background: rgba(0,0,0,.10); }
     .sheet h2{ margin:0 0 10px; font-size:20px; }
     .sheet .text{ white-space: normal; line-height:1.75; font-size:16px; }
-    .sheet .sig{ margin-top:14px; opacity:.9; }
+    .sheet .sig2{ margin-top:14px; opacity:.9; font-weight:800; }
 
     .toast{
       position:fixed; left:50%; bottom:14px; transform:translateX(-50%);
@@ -174,59 +192,78 @@
       <div class="brand">
         <div class="dot"></div>
         <div>
-          <div class="title">Noel yêu xa</div>
-          <div class="sub">Cuộn xuống để đọc từng mốc. Nhạc chỉ phát khi bấm.</div>
+          <div class="title">Thư tay theo dòng thời gian</div>
+          <div class="sub">Cuộn xuống để từng mốc hiện dần. Nhạc chỉ phát khi bấm.</div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;">
+      <div style="display:flex;gap:10px;align-items:center; flex-wrap:wrap; justify-content:flex-end;">
         <button class="btn" id="musicBtn">♫ Bật nhạc</button>
         <button class="btn primary" id="openLetter">💌 Mở thư</button>
       </div>
     </div>
 
     <div class="hero">
-      <h1>Dù ở xa, đêm Noel này anh vẫn ở đây cùng em.</h1>
-      <p>Trang này là một “lá thư theo dòng thời gian” — từng đoạn sẽ hiện khi em cuộn xuống.</p>
+      <h1>Dù ở xa, Noel này anh vẫn ở đây cùng em.</h1>
+      <p>Đây là một cuốn “nhật ký ngắn” — mỗi đoạn là một mốc của tụi mình. Khi em sẵn sàng, cuộn xuống nhé.</p>
     </div>
 
     <div class="timeline">
       <div class="item">
         <div class="kicker">MỐC 01</div>
-        <div class="h">Một điều anh muốn nói ngay</div>
-        <div class="txt">Anh nhớ em. Và anh thương em — không vì Noel, mà vì em là em.</div>
-        <div class="tag">🤍 Yêu xa</div>
+        <div class="h">Ngày quen nhau</div>
+        <div class="txt">
+          <b>[dd/mm/yyyy]</b> — Ngày mình bắt đầu nói chuyện, anh không nghĩ mọi thứ sẽ đi xa đến vậy.
+          Nhưng từ lúc đó, anh biết có một người khiến anh muốn chậm lại, lắng nghe nhiều hơn, và học cách yêu cho đàng hoàng.
+        </div>
+        <div class="tag">🤍 Khởi đầu</div>
       </div>
 
       <div class="item">
         <div class="kicker">MỐC 02</div>
-        <div class="h">Noel năm nay</div>
-        <div class="txt">Mình không ở cạnh nhau, nhưng anh vẫn muốn em có cảm giác: “Anh đang ở đây.”</div>
-        <div class="tag">🎄 24/12</div>
+        <div class="h">Lần cãi nhau</div>
+        <div class="txt">
+          <b>[một lần khó quên]</b> — Anh không tự hào về lần đó. Anh đã nóng, đã thiếu tinh tế, và để em buồn.
+          Sau lần ấy, anh hiểu rằng yêu không phải là đúng–sai, mà là biết dừng lại để giữ nhau.
+        </div>
+        <div class="tag">🫧 Trưởng thành</div>
       </div>
 
       <div class="item">
         <div class="kicker">MỐC 03</div>
-        <div class="h">Điều anh trân trọng nhất</div>
-        <div class="txt">Là em vẫn ở lại, vẫn lắng nghe, vẫn tin anh có thể tốt hơn mỗi ngày.</div>
-        <div class="tag">✨ Biết ơn</div>
+        <div class="h">Lần nhớ nhất</div>
+        <div class="txt">
+          <b>[một khoảnh khắc cụ thể]</b> — Có những lúc không nói gì, chỉ im lặng mà nhớ.
+          Nhớ giọng nói, nhớ cách em quan tâm những điều nhỏ. Anh nhận ra: nhớ em là một thói quen rất khó bỏ.
+        </div>
+        <div class="tag">✨ Kỷ niệm</div>
       </div>
 
       <div class="item">
         <div class="kicker">MỐC 04</div>
-        <div class="h">Một lời hứa nhỏ (nhưng thật)</div>
-        <div class="txt">Anh sẽ chủ động hơn, tinh tế hơn, và yêu em bằng hành động rõ ràng hơn.</div>
-        <div class="tag">🧭 Tương lai</div>
+        <div class="h">Noel năm nay (xa nhau)</div>
+        <div class="txt">
+          <b>24/12/[năm]</b> — Noel này mình không ở cạnh nhau. Anh không thể nắm tay em, không thể cùng đi dạo.
+          Nhưng anh vẫn muốn em biết: trong đêm này, anh vẫn dành trọn sự hiện diện của mình cho em, theo cách anh có thể.
+        </div>
+        <div class="tag">🎄 Noel</div>
       </div>
 
       <div class="item">
         <div class="kicker">MỐC 05</div>
-        <div class="h">Đến khi mình gặp nhau</div>
-        <div class="txt">Anh muốn được ôm em thật lâu, và nói: “Noel năm sau mình sẽ không xa nhau nữa.”</div>
-        <div class="tag">🫶 Hẹn gặp</div>
+        <div class="h">Tương lai</div>
+        <div class="txt">
+          Anh không hứa những điều lớn lao. Anh chỉ hứa sẽ kiên nhẫn hơn, tinh tế hơn,
+          và yêu em bằng hành động rõ ràng hơn mỗi ngày. Anh muốn đọc tiếp cuốn nhật ký này cùng em — ở ngoài đời.
+        </div>
+        <div class="tag">🧭 Tương lai</div>
       </div>
     </div>
 
-    <div class="footer">Gợi ý: bấm “Mở thư” để xem bức thư đầy đủ.</div>
+    <div class="end item" id="endCard">
+      <div class="quote">“Anh chờ ngày được đọc tiếp cùng em, ở ngoài đời.”</div>
+      <div class="sig">— <b>[Tên của bạn]</b> 🤍</div>
+      <div class="small">Gợi ý: bấm “Mở thư” để đọc bản thư đầy đủ.</div>
+    </div>
   </div>
 
   <!-- Modal letter -->
@@ -235,35 +272,52 @@
       <button class="x" id="closeModal" aria-label="Đóng">✕</button>
       <h2>Gửi em,</h2>
 
+      <!-- Nội dung thư đầy đủ: sửa ở đây (không cần xuống dòng kiểu Enter nếu bạn không muốn) -->
       <div class="text" id="letterText">
-Anh biết Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn anh nói ra.
-Nhưng anh vẫn muốn em cảm thấy được yêu, được trân trọng, và được “ở cùng anh” theo cách riêng.
-
-Nếu hôm nay em mệt, em chỉ cần đọc đến đây thôi cũng được.
-Còn nếu em muốn, anh sẽ kể tiếp bằng hành động — mỗi ngày một chút, để mình gần nhau hơn.
-
-Thương em 🤍
+Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn anh nói ra. Nhưng anh vẫn muốn em cảm thấy được yêu, được trân trọng, và được “ở cùng anh” theo cách riêng. Nếu hôm nay em mệt, em chỉ cần đọc đến đây thôi cũng được. Còn nếu em muốn, anh sẽ kể tiếp bằng hành động — mỗi ngày một chút, để mình gần nhau hơn. Thương em 🤍
       </div>
 
-      <div class="sig">— <b>[Tên của bạn]</b></div>
+      <div class="sig2">— <b>[Tên của bạn]</b></div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <!-- Nhạc: đặt file music.mp3 cùng thư mục với index.html -->
   <audio id="bgm" preload="auto" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 
   <script>
+    // Scroll reveal
     const items = document.querySelectorAll('.item');
+    const io = new IntersectionObserver((entries)=>{
+      for(const e of entries){
+        if(e.isIntersecting) e.target.classList.add('show');
+      }
+    }, { threshold: 0.18 });
+    items.forEach(el => io.observe(el));
+
+    // Modal
     const modal = document.getElementById('modal');
     const openLetter = document.getElementById('openLetter');
     const closeModal = document.getElementById('closeModal');
-    const toast = document.getElementById('toast');
 
+    function closeLetter(){
+      modal.classList.remove('show');
+    }
+    openLetter.addEventListener('click', (e)=>{
+      e.preventDefault();
+      modal.classList.add('show');
+    });
+    closeModal.addEventListener('click', (e)=>{ e.preventDefault(); closeLetter(); });
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeLetter(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLetter(); });
+
+    // Music
     const bgm = document.getElementById('bgm');
     const musicBtn = document.getElementById('musicBtn');
+    const toast = document.getElementById('toast');
     let musicOn = false;
 
     function showToast(msg){
@@ -272,32 +326,10 @@ Thương em 🤍
       setTimeout(()=>toast.classList.remove('show'), 2200);
     }
 
-    // Scroll reveal
-    const io = new IntersectionObserver((entries)=>{
-      for(const e of entries){
-        if(e.isIntersecting) e.target.classList.add('show');
-      }
-    }, { threshold: 0.18 });
-
-    items.forEach(el=>io.observe(el));
-
-    // Modal
-    openLetter.addEventListener('click', (e)=>{
-      e.preventDefault();
-      modal.classList.add('show');
-    });
-    function closeLetter(){
-      modal.classList.remove('show');
-    }
-    closeModal.addEventListener('click', closeLetter);
-    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeLetter(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLetter(); });
-
-    // Music
     async function toggleMusic(){
       try{
         if(!musicOn){
-          await bgm.play();
+          await bgm.play(); // browsers require user gesture
           musicOn = true;
           musicBtn.textContent = "❚❚ Tắt nhạc";
           showToast("Nhạc đã bật ♫");
