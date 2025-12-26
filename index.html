@@ -3,136 +3,187 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Thư tay theo dòng thời gian</title>
+  <title>Thư gửi em</title>
   <style>
     :root{
-      --bg1:#070a12; --bg2:#180a18;
-      --card: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.14);
+      --bg1:#120822;
+      --bg2:#2a0b2a;
+      --pink:#ff4d7d;
+      --gold:#ffd166;
+      --card: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.18);
       --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --accent:#ff4d7d;
-      --accent2:#ffd166;
-      --shadow: 0 22px 70px rgba(0,0,0,.45);
-      --r: 22px;
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 26px 90px rgba(0,0,0,.50);
+      --r: 26px;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; color:var(--text);
+      margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
       background:
-        radial-gradient(1000px 700px at 15% 10%, rgba(255,77,125,.20), transparent 55%),
-        radial-gradient(900px 700px at 85% 25%, rgba(255,209,102,.14), transparent 55%),
+        radial-gradient(1100px 800px at 20% 10%, rgba(255,77,125,.22), transparent 58%),
+        radial-gradient(900px 700px at 80% 30%, rgba(255,209,102,.14), transparent 58%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       overflow-x:hidden;
     }
-    .stars{
-      position:fixed; inset:0; pointer-events:none; opacity:.55; z-index:0;
-      background-image:
-        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.55), transparent 60%),
-        radial-gradient(1px 1px at 160px 90px, rgba(255,255,255,.35), transparent 60%),
-        radial-gradient(2px 2px at 260px 220px, rgba(255,255,255,.45), transparent 60%),
-        radial-gradient(1px 1px at 420px 160px, rgba(255,255,255,.35), transparent 60%),
-        radial-gradient(2px 2px at 620px 320px, rgba(255,255,255,.45), transparent 60%);
-      background-size: 700px 420px;
-      animation: drift 18s linear infinite;
-    }
-    @keyframes drift{ from{transform:translateY(0)} to{transform:translateY(-60px)} }
 
-    .wrap{ position:relative; z-index:1; padding:18px 14px 52px; }
-    .top{
-      max-width:980px; margin: 0 auto 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    /* floating hearts layer */
+    .hearts{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      overflow:hidden;
+    }
+    .heart{
+      position:absolute; bottom:-60px;
+      font-size:18px;
+      opacity:.85;
+      animation: floatUp linear forwards;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) translateX(0) scale(1); opacity:.0; }
+      10%{ opacity:.85; }
+      to{ transform: translateY(-110vh) translateX(var(--drift)) scale(var(--scale)); opacity:0; }
+    }
+
+    .wrap{
+      position:relative; z-index:1;
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding: 18px 14px 44px;
+    }
+
+    .shell{
+      width:min(980px, 94vw);
       border:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
       border-radius: var(--r);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      padding: 14px 14px;
+      backdrop-filter: blur(14px);
+      overflow:hidden;
     }
-    .brand{display:flex; gap:10px; align-items:center}
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 16px 16px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .brand{display:flex; gap:10px; align-items:center;}
     .dot{
-      width:12px; height:12px; border-radius:999px;
-      background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
+      width:12px;height:12px;border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--pink));
       box-shadow: 0 0 18px rgba(255,77,125,.55);
     }
     .title{font-weight:900; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:13px; margin-top:2px}
 
+    .actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
     .btn{
-      border:1px solid var(--stroke);
+      border:1px solid rgba(255,255,255,.18);
       background: rgba(255,255,255,.06);
       color:var(--text);
       padding:10px 12px;
-      border-radius:14px;
+      border-radius: 16px;
       cursor:pointer;
-      font-weight:800;
-      user-select:none;
+      font-weight:850;
       transition: transform .08s ease, background .2s ease;
+      user-select:none;
     }
     .btn:hover{background:rgba(255,255,255,.10)}
-    .btn:active{transform: translateY(1px)}
-    .btn.primary{border-color: rgba(255,77,125,.45); background: rgba(255,77,125,.18);}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      border-color: rgba(255,77,125,.45);
+      background: rgba(255,77,125,.18);
+    }
+
+    .main{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+      padding: 14px 14px 16px;
+    }
+    @media (max-width: 880px){
+      .main{grid-template-columns:1fr}
+    }
+
+    .left, .right{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      border-radius: var(--r);
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .glow{
+      position:absolute; inset:-40%;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(255,77,125,.24), transparent 55%),
+        radial-gradient(circle at 75% 60%, rgba(255,209,102,.16), transparent 55%);
+      filter: blur(18px);
+      opacity:.9;
+      animation: pulse 4.6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 
     .hero{
-      max-width:980px; margin:0 auto;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.14);
-      border-radius: var(--r);
-      padding: 18px 18px;
+      position:relative;
+      padding: 6px 6px 4px;
     }
-    .hero h1{margin:0 0 6px; font-size:22px}
-    .hero p{margin:0; color:var(--muted); line-height:1.6}
+    .hero h1{
+      margin:0 0 6px;
+      font-size: 22px;
+      line-height:1.25;
+      font-weight: 950;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size: 14px;
+    }
 
-    .timeline{
-      max-width:980px; margin: 14px auto 0;
-      display:grid; gap:12px;
+    .sealRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top: 14px;
+      flex-wrap:wrap;
     }
-    .item{
-      border:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
-      border-radius: var(--r);
-      box-shadow: 0 14px 50px rgba(0,0,0,.25);
-      padding: 16px 16px;
-      overflow:hidden;
-      transform: translateY(14px);
-      opacity: 0;
-      transition: opacity .7s ease, transform .7s ease;
-    }
-    .item.show{ opacity:1; transform: translateY(0); }
-    .kicker{color:rgba(255,255,255,.78); font-weight:900; font-size:13px; letter-spacing:.5px}
-    .h{margin:6px 0 8px; font-size:18px; font-weight:900}
-    .txt{color:rgba(255,255,255,.82); line-height:1.75}
-    .tag{
+    .chip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
       display:inline-flex; gap:8px; align-items:center;
-      margin-top:10px;
-      padding:8px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.14);
-      color:rgba(255,255,255,.78);
-      font-size:13px;
     }
 
-    .end{
-      max-width:980px; margin: 14px auto 0;
+    /* timeline cards */
+    .timeline{margin-top:12px; display:grid; gap:10px}
+    .card{
       border:1px solid rgba(255,255,255,.14);
       background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border-radius: var(--r);
-      box-shadow: 0 14px 50px rgba(0,0,0,.25);
-      padding: 18px 18px;
-      text-align:center;
+      border-radius: 20px;
+      padding: 14px 14px;
+      transform: translateY(12px);
+      opacity:0;
+      transition: opacity .65s ease, transform .65s ease;
     }
-    .quote{
-      font-size:18px;
-      font-weight:900;
-      letter-spacing:.2px;
-      line-height:1.6;
-    }
-    .sig{margin-top:10px; color:rgba(255,255,255,.78); font-weight:800}
-    .small{margin-top:6px; color:rgba(255,255,255,.62); font-size:13px}
+    .card.show{opacity:1; transform:translateY(0)}
+    .k{font-size:12px; font-weight:900; letter-spacing:.5px; color:rgba(255,255,255,.78)}
+    .h{margin:6px 0 6px; font-size:17px; font-weight:950}
+    .t{margin:0; color:rgba(255,255,255,.80); line-height:1.7}
 
-    /* Modal letter (full letter) */
+    /* “paper” modal */
     .modal{
       position:fixed; inset:0;
       display:none;
@@ -140,35 +191,86 @@
       padding: 16px;
       background: rgba(0,0,0,.55);
       backdrop-filter: blur(8px);
-      z-index: 50;
+      z-index:50;
       overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling:touch;
       align-items:flex-start;
     }
-    .modal.show{ display:grid; }
-    .sheet{
-      width:min(760px, 94vw);
+    .modal.show{display:grid}
+    .paper{
+      width:min(780px, 95vw);
       margin: 18px auto;
       background: rgba(255,255,255,.95);
       color:#111;
-      border-radius: 22px;
-      box-shadow: 0 28px 80px rgba(0,0,0,.55);
-      padding: 20px 18px;
-      position:relative;
+      border-radius: 26px;
+      box-shadow: 0 30px 95px rgba(0,0,0,.55);
+      padding: 18px 18px 16px;
       max-height: calc(100vh - 36px);
       overflow:auto;
+      position:relative;
     }
-    .x{
+    .paper::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(800px 240px at 50% -40px, rgba(255,77,125,.12), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,.03), transparent 40%);
+      border-radius: 26px;
+      pointer-events:none;
+    }
+    .close{
       position:absolute; right:12px; top:12px;
+      width:42px; height:42px; border-radius:16px;
       border:0; cursor:pointer;
-      width:40px; height:40px; border-radius:14px;
       background: rgba(0,0,0,.06);
-      font-weight:900;
+      font-weight:950;
+      z-index:2;
     }
-    .x:hover{ background: rgba(0,0,0,.10); }
-    .sheet h2{ margin:0 0 10px; font-size:20px; }
-    .sheet .text{ white-space: normal; line-height:1.75; font-size:16px; }
-    .sheet .sig2{ margin-top:14px; opacity:.9; font-weight:800; }
+    .close:hover{background:rgba(0,0,0,.10)}
+    .paper h2{margin:0 0 10px; font-size:20px; position:relative; z-index:1}
+    .letter{
+      position:relative; z-index:1;
+      line-height:1.8;
+      font-size:16px;
+      white-space: normal;
+    }
+    .sig{
+      margin-top:14px;
+      opacity:.9;
+      font-weight:850;
+    }
+    .type{
+      border-right: 2px solid rgba(17,17,17,.55);
+      padding-right: 2px;
+      animation: caret 1s steps(2) infinite;
+    }
+    @keyframes caret{ 50%{border-right-color: transparent;} }
+
+    .rightBox{
+      position:relative;
+      padding: 8px 6px 6px;
+    }
+    .mini{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+      margin: 0 0 10px;
+    }
+    .quote{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 20px;
+      padding: 14px;
+      text-align:center;
+    }
+    .quote b{font-weight:950}
+    .foot{
+      margin-top:10px;
+      color:rgba(255,255,255,.62);
+      font-size:12.5px;
+      text-align:center;
+    }
 
     .toast{
       position:fixed; left:50%; bottom:14px; transform:translateX(-50%);
@@ -181,140 +283,194 @@
       z-index:60;
       font-size:13px;
     }
-    .toast.show{ display:block; }
+    .toast.show{display:block}
   </style>
 </head>
 <body>
-  <div class="stars"></div>
+  <div class="hearts" id="hearts"></div>
 
   <div class="wrap">
-    <div class="top">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <div class="title">Thư tay theo dòng thời gian</div>
-          <div class="sub">Cuộn xuống để từng mốc hiện dần. Nhạc chỉ phát khi bấm.</div>
+    <div class="shell">
+      <div class="top">
+        <div class="brand">
+          <div class="dot"></div>
+          <div>
+            <div class="title">Noel yêu xa</div>
+            <div class="sub">Cuộn xuống để từng mốc hiện dần. Bấm “Mở thư” để đọc hết.</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="musicBtn">♫ Bật nhạc</button>
+          <button class="btn primary" id="openBtn">💌 Mở thư</button>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center; flex-wrap:wrap; justify-content:flex-end;">
-        <button class="btn" id="musicBtn">♫ Bật nhạc</button>
-        <button class="btn primary" id="openLetter">💌 Mở thư</button>
-      </div>
-    </div>
 
-    <div class="hero">
-      <h1>Dù ở xa, Noel này anh vẫn ở đây cùng em.</h1>
-      <p>Đây là một cuốn “nhật ký ngắn” — mỗi đoạn là một mốc của tụi mình. Khi em sẵn sàng, cuộn xuống nhé.</p>
-    </div>
+      <div class="main">
+        <div class="left">
+          <div class="glow"></div>
 
-    <div class="timeline">
-      <div class="item">
-        <div class="kicker">MỐC 01</div>
-        <div class="h">Ngày quen nhau</div>
-        <div class="txt">
-          <b>[dd/mm/yyyy]</b> — Ngày mình bắt đầu nói chuyện, anh không nghĩ mọi thứ sẽ đi xa đến vậy.
-          Nhưng từ lúc đó, anh biết có một người khiến anh muốn chậm lại, lắng nghe nhiều hơn, và học cách yêu cho đàng hoàng.
+          <div class="hero">
+            <h1>Dù ở xa, Noel này anh vẫn chọn ở “cạnh em”, theo cách anh có thể.</h1>
+            <p>Đây là cuốn nhật ký nhỏ của tụi mình. Mỗi đoạn là một mốc — nhẹ thôi, nhưng thật.</p>
+
+            <div class="sealRow">
+              <div class="chip">🤍 <span>Thư tay</span></div>
+              <div class="chip">🎄 <span>Noel</span></div>
+              <div class="chip">🫶 <span>Yêu xa</span></div>
+            </div>
+          </div>
+
+          <div class="timeline" id="timeline">
+            <div class="card">
+              <div class="k">MỐC 01</div>
+              <div class="h">Ngày quen nhau</div>
+              <p class="t"><b>[dd/mm/yyyy]</b> — Ngày mình bắt đầu nói chuyện, anh không nghĩ mọi thứ sẽ đi xa đến vậy. Nhưng từ lúc đó, anh biết có một người khiến anh muốn chậm lại và lắng nghe nhiều hơn.</p>
+            </div>
+
+            <div class="card">
+              <div class="k">MỐC 02</div>
+              <div class="h">Lần cãi nhau</div>
+              <p class="t"><b>[một lần khó quên]</b> — Anh không tự hào về lần đó. Anh đã nóng và thiếu tinh tế. Sau lần ấy, anh hiểu: yêu không phải đúng–sai, mà là biết dừng lại để giữ nhau.</p>
+            </div>
+
+            <div class="card">
+              <div class="k">MỐC 03</div>
+              <div class="h">Lần nhớ nhất</div>
+              <p class="t"><b>[một khoảnh khắc cụ thể]</b> — Có những lúc không nói gì, chỉ im lặng mà nhớ. Nhớ giọng nói, nhớ cách em quan tâm những điều nhỏ. Anh nhận ra: nhớ em là một thói quen rất khó bỏ.</p>
+            </div>
+
+            <div class="card">
+              <div class="k">MỐC 04</div>
+              <div class="h">Noel năm nay (xa nhau)</div>
+              <p class="t"><b>24/12/[năm]</b> — Noel này mình không ở cạnh nhau. Nhưng anh vẫn muốn em biết: trong đêm này, anh vẫn dành trọn sự hiện diện của mình cho em, theo cách anh có thể.</p>
+            </div>
+
+            <div class="card">
+              <div class="k">MỐC 05</div>
+              <div class="h">Tương lai</div>
+              <p class="t">Anh không hứa những điều lớn lao. Anh chỉ hứa sẽ kiên nhẫn hơn, tinh tế hơn, và yêu em bằng hành động rõ ràng hơn mỗi ngày. Anh muốn đọc tiếp cuốn nhật ký này cùng em — ở ngoài đời.</p>
+            </div>
+          </div>
         </div>
-        <div class="tag">🤍 Khởi đầu</div>
-      </div>
 
-      <div class="item">
-        <div class="kicker">MỐC 02</div>
-        <div class="h">Lần cãi nhau</div>
-        <div class="txt">
-          <b>[một lần khó quên]</b> — Anh không tự hào về lần đó. Anh đã nóng, đã thiếu tinh tế, và để em buồn.
-          Sau lần ấy, anh hiểu rằng yêu không phải là đúng–sai, mà là biết dừng lại để giữ nhau.
+        <div class="right">
+          <div class="glow"></div>
+
+          <div class="rightBox">
+            <p class="mini">
+              • Nhạc chỉ phát sau khi bấm (quy định trình duyệt).<br/>
+              • Bạn sửa nội dung các mốc bằng cách thay phần trong ngoặc <b>[...]</b>.<br/>
+              • Bấm “Mở thư” để đọc bản thư đầy đủ (typewriter).
+            </p>
+
+            <div class="quote">
+              <div style="font-size:16px; line-height:1.6;">
+                <b>“Anh chờ ngày được đọc tiếp cùng em, ở ngoài đời.”</b> 🤍
+              </div>
+              <div class="foot">— [Tên của bạn]</div>
+            </div>
+
+            <div class="foot" style="margin-top:12px;">
+              Tip: Nếu web không cập nhật, hãy Ctrl+Shift+R.
+            </div>
+          </div>
         </div>
-        <div class="tag">🫧 Trưởng thành</div>
       </div>
-
-      <div class="item">
-        <div class="kicker">MỐC 03</div>
-        <div class="h">Lần nhớ nhất</div>
-        <div class="txt">
-          <b>[một khoảnh khắc cụ thể]</b> — Có những lúc không nói gì, chỉ im lặng mà nhớ.
-          Nhớ giọng nói, nhớ cách em quan tâm những điều nhỏ. Anh nhận ra: nhớ em là một thói quen rất khó bỏ.
-        </div>
-        <div class="tag">✨ Kỷ niệm</div>
-      </div>
-
-      <div class="item">
-        <div class="kicker">MỐC 04</div>
-        <div class="h">Noel năm nay (xa nhau)</div>
-        <div class="txt">
-          <b>24/12/[năm]</b> — Noel này mình không ở cạnh nhau. Anh không thể nắm tay em, không thể cùng đi dạo.
-          Nhưng anh vẫn muốn em biết: trong đêm này, anh vẫn dành trọn sự hiện diện của mình cho em, theo cách anh có thể.
-        </div>
-        <div class="tag">🎄 Noel</div>
-      </div>
-
-      <div class="item">
-        <div class="kicker">MỐC 05</div>
-        <div class="h">Tương lai</div>
-        <div class="txt">
-          Anh không hứa những điều lớn lao. Anh chỉ hứa sẽ kiên nhẫn hơn, tinh tế hơn,
-          và yêu em bằng hành động rõ ràng hơn mỗi ngày. Anh muốn đọc tiếp cuốn nhật ký này cùng em — ở ngoài đời.
-        </div>
-        <div class="tag">🧭 Tương lai</div>
-      </div>
-    </div>
-
-    <div class="end item" id="endCard">
-      <div class="quote">“Anh chờ ngày được đọc tiếp cùng em, ở ngoài đời.”</div>
-      <div class="sig">— <b>[Tên của bạn]</b> 🤍</div>
-      <div class="small">Gợi ý: bấm “Mở thư” để đọc bản thư đầy đủ.</div>
     </div>
   </div>
 
-  <!-- Modal letter -->
+  <!-- modal letter -->
   <div class="modal" id="modal">
-    <div class="sheet" role="dialog" aria-modal="true">
-      <button class="x" id="closeModal" aria-label="Đóng">✕</button>
+    <div class="paper" role="dialog" aria-modal="true">
+      <button class="close" id="closeBtn" aria-label="Đóng">✕</button>
       <h2>Gửi em,</h2>
 
-      <!-- Nội dung thư đầy đủ: sửa ở đây (không cần xuống dòng kiểu Enter nếu bạn không muốn) -->
-      <div class="text" id="letterText">
-Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn anh nói ra. Nhưng anh vẫn muốn em cảm thấy được yêu, được trân trọng, và được “ở cùng anh” theo cách riêng. Nếu hôm nay em mệt, em chỉ cần đọc đến đây thôi cũng được. Còn nếu em muốn, anh sẽ kể tiếp bằng hành động — mỗi ngày một chút, để mình gần nhau hơn. Thương em 🤍
-      </div>
+      <!-- Nội dung thư: bạn có thể gộp 1 đoạn để không xuống dòng -->
+      <div class="letter" id="typed"></div>
 
-      <div class="sig2">— <b>[Tên của bạn]</b></div>
+      <div class="sig">— <b>[Tên của bạn]</b> 🤍</div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <!-- Nhạc: đặt file music.mp3 cùng thư mục với index.html -->
   <audio id="bgm" preload="auto" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    // Scroll reveal
-    const items = document.querySelectorAll('.item');
+    // ====== HEARTS ======
+    const hearts = document.getElementById('hearts');
+    const heartChars = ["🤍","💗","💖","💝","💞"];
+    function spawnHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      const left = Math.random()*100;
+      const drift = (Math.random()*2-1)*80;
+      const dur = 6 + Math.random()*7;
+      const scale = 0.85 + Math.random()*1.25;
+      h.style.left = left + 'vw';
+      h.style.setProperty('--drift', drift + 'px');
+      h.style.setProperty('--scale', scale);
+      h.style.animationDuration = dur + 's';
+      hearts.appendChild(h);
+      setTimeout(()=>h.remove(), dur*1000);
+    }
+    setInterval(spawnHeart, 520);
+    for(let i=0;i<10;i++) setTimeout(spawnHeart, i*120);
+
+    // ====== SCROLL REVEAL ======
+    const cards = document.querySelectorAll('.card');
     const io = new IntersectionObserver((entries)=>{
       for(const e of entries){
         if(e.isIntersecting) e.target.classList.add('show');
       }
-    }, { threshold: 0.18 });
-    items.forEach(el => io.observe(el));
+    }, {threshold: 0.18});
+    cards.forEach(c=>io.observe(c));
 
-    // Modal
+    // ====== MODAL + TYPEWRITER ======
     const modal = document.getElementById('modal');
-    const openLetter = document.getElementById('openLetter');
-    const closeModal = document.getElementById('closeModal');
+    const openBtn = document.getElementById('openBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const typed = document.getElementById('typed');
 
-    function closeLetter(){
-      modal.classList.remove('show');
+    const fullText =
+`Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn anh nói ra. Nhưng anh vẫn muốn em cảm thấy được yêu, được trân trọng, và được “ở cùng anh” theo cách riêng. Nếu hôm nay em mệt, em chỉ cần đọc đến đây thôi cũng được. Còn nếu em muốn, anh sẽ kể tiếp bằng hành động — mỗi ngày một chút, để mình gần nhau hơn. Thương em 🤍`;
+
+    let typingTimer = null;
+    function typeText(text){
+      typed.innerHTML = '';
+      let i = 0;
+      const span = document.createElement('span');
+      span.className = 'type';
+      typed.appendChild(span);
+
+      clearInterval(typingTimer);
+      typingTimer = setInterval(()=>{
+        span.textContent = text.slice(0, i++);
+        if(i > text.length){
+          clearInterval(typingTimer);
+          span.classList.remove('type');
+        }
+      }, 18);
     }
-    openLetter.addEventListener('click', (e)=>{
-      e.preventDefault();
-      modal.classList.add('show');
-    });
-    closeModal.addEventListener('click', (e)=>{ e.preventDefault(); closeLetter(); });
-    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeLetter(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeLetter(); });
 
-    // Music
+    function openModal(){
+      modal.classList.add('show');
+      typeText(fullText);
+    }
+    function closeModal(){
+      modal.classList.remove('show');
+      clearInterval(typingTimer);
+    }
+
+    openBtn.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+    closeBtn.addEventListener('click', (e)=>{ e.preventDefault(); closeModal(); });
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+    // ====== MUSIC ======
     const bgm = document.getElementById('bgm');
     const musicBtn = document.getElementById('musicBtn');
     const toast = document.getElementById('toast');
@@ -329,7 +485,7 @@ Noel năm nay mình ở xa nhau, và điều đó làm anh buồn nhiều hơn a
     async function toggleMusic(){
       try{
         if(!musicOn){
-          await bgm.play(); // browsers require user gesture
+          await bgm.play();
           musicOn = true;
           musicBtn.textContent = "❚❚ Tắt nhạc";
           showToast("Nhạc đã bật ♫");
